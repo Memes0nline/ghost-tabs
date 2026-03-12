@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+/* ── Ghost Tabs Theme ────────────────────────────── */
+:root {
+  --bg: #0A0A0F;
+  --bg-card: #12121A;
+  --bg-hover: #1A1A25;
+  --accent: #00FF88;
+  --accent-dim: #00cc6a;
+  --text-primary: #E8E8F0;
+  --text-secondary: #8888AA;
+  --text-muted: #555570;
+  --border: #222233;
+  --danger: #FF4466;
+}
+
+/* AR Mode overrides — pure black for OLED transparency */
+.mode-ar {
+  --bg: #000000;
+  --bg-card: #000000;
+  --bg-hover: #0A0A0A;
+  --text-primary: #00FF88;
+  --text-secondary: #00cc6a;
+  --border: #003311;
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--text-primary);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* ── Base ──────────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: Arial, Helvetica, sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ── Scrollbar (dark) ──────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ── Selection colour ──────────────────────────── */
+::selection {
+  background: rgba(0, 255, 136, 0.25);
+  color: #fff;
+}
+
+/* ── AR-mode glow for text ─────────────────────── */
+.mode-ar .glow {
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.6), 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+/* ── Tab monospace view ────────────────────────── */
+.tab-text {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'Courier New', Courier, monospace;
+  white-space: pre;
+  line-height: 1.5;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
