@@ -18,7 +18,7 @@ export interface SongsterrResult {
  */
 export async function searchSongsterr(query: string): Promise<SongsterrResult[]> {
   try {
-    const url = `https://www.songsterr.com/a/ra/songs.json?pattern=${encodeURIComponent(query)}`;
+    const url = `https://www.songsterr.com/api/songs?search=${encodeURIComponent(query)}`;
     console.log('[Songsterr] Fetching URL:', url);
 
     const res = await fetch(url, { next: { revalidate: 3600 } }); // cache 1 hour
