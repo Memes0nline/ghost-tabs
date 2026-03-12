@@ -19,17 +19,22 @@ export interface SongsterrResult {
 export async function searchSongsterr(query: string): Promise<SongsterrResult[]> {
   try {
     const url = `https://www.songsterr.com/a/ra/songs.json?pattern=${encodeURIComponent(query)}`;
+    console.log('[Songsterr] Fetching URL:', url);
+
     const res = await fetch(url, { next: { revalidate: 3600 } }); // cache 1 hour
+    console.log('[Songsterr] Response status:', res.status);
 
     if (!res.ok) {
-      console.error(`Songsterr API error: ${res.status}`);
+      console.error(`[Songsterr] API error: ${res.status} ${res.statusText}`);
       return [];
     }
 
     const data: SongsterrResult[] = await res.json();
+    console.log('[Songsterr] Raw response data:', JSON.stringify(data.slice(0, 3), null, 2));
+    console.log('[Songsterr] Total results:', data.length);
     return data;
   } catch (err) {
-    console.error('Songsterr fetch failed:', err);
+    console.error('[Songsterr] Fetch failed:', err);
     return [];
   }
 }
