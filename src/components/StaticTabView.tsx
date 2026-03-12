@@ -76,14 +76,12 @@ export default function StaticTabView({
 
       {/* BPM credit */}
       <p className="text-xs mt-4 text-center" style={{ color: 'var(--text-muted)' }}>
-        BPM data provided by{' '}
         <a
           href="https://getsongbpm.com"
           target="_blank"
-          rel="noopener noreferrer"
           style={{ color: 'var(--accent-dim)' }}
         >
-          GetSongBPM.com
+          BPM data provided by GetSongBPM
         </a>
       </p>
     </div>
