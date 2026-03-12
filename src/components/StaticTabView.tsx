@@ -79,6 +79,7 @@ export default function StaticTabView({
         <a
           href="https://getsongbpm.com"
           target="_blank"
+          rel="noopener"
           style={{ color: 'var(--accent-dim)' }}
         >
           BPM data provided by GetSongBPM
