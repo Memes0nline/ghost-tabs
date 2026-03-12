@@ -1,9 +1,23 @@
 'use client';
 
-import { use } from 'react';
+import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getSongById } from '@/lib/sample-data';
 import StaticTabView from '@/components/StaticTabView';
+
+interface SongData {
+  id: string;
+  title: string;
+  artist: string;
+  tab_text?: string;
+  tabText?: string;
+  bpm: number | null;
+  tuning: string;
+  key_of?: string | null;
+  keyOf?: string | null;
+  time_signature?: string;
+  timeSignature?: string;
+}
 
 interface SongPageProps {
   params: Promise<{ id: string }>;
@@ -11,7 +25,53 @@ interface SongPageProps {
 
 export default function SongPage({ params }: SongPageProps) {
   const { id } = use(params);
-  const song = getSongById(id);
+  const [song, setSong] = useState<SongData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchSong() {
+      // Try API first
+      try {
+        const res = await fetch(`/api/songs/${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && !data.error) {
+            setSong(data);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch {
+        // API unreachable — fall through to sample data
+      }
+
+      // Fall back to local sample data
+      const local = getSongById(id);
+      if (local) {
+        setSong({
+          id: local.id,
+          title: local.title,
+          artist: local.artist,
+          tabText: local.tabText,
+          bpm: local.bpm,
+          tuning: local.tuning,
+          keyOf: local.keyOf,
+          timeSignature: local.timeSignature,
+        });
+      }
+      setLoading(false);
+    }
+    fetchSong();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-16 text-center">
+        <div className="inline-block w-8 h-8 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border)', borderTopColor: 'var(--accent)' }} />
+        <p className="mt-4 text-sm" style={{ color: 'var(--text-muted)' }}>Loading tab...</p>
+      </div>
+    );
+  }
 
   if (!song) {
     return (
@@ -33,6 +93,11 @@ export default function SongPage({ params }: SongPageProps) {
     );
   }
 
+  // Normalize field names (API returns snake_case, local data uses camelCase)
+  const tabText = song.tab_text || song.tabText || '';
+  const keyOf = song.key_of ?? song.keyOf ?? null;
+  const timeSignature = song.time_signature || song.timeSignature || '4/4';
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Back link */}
@@ -48,13 +113,13 @@ export default function SongPage({ params }: SongPageProps) {
 
       {/* Static tab viewer */}
       <StaticTabView
-        tabText={song.tabText}
+        tabText={tabText}
         title={song.title}
         artist={song.artist}
         bpm={song.bpm}
         tuning={song.tuning}
-        keyOf={song.keyOf}
-        timeSignature={song.timeSignature}
+        keyOf={keyOf}
+        timeSignature={timeSignature}
       />
 
       {/* Pro teaser — placeholder for Phase 5 */}
@@ -66,7 +131,7 @@ export default function SongPage({ params }: SongPageProps) {
         }}
       >
         <p className="text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-          🎸 Horizontal Playthrough
+          Horizontal Playthrough
         </p>
         <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
           Watch the tab scroll in real-time at {song.bpm || 120} BPM — coming in Pro
